@@ -103,11 +103,13 @@ struct workio_cmd {
 enum algos {
 	ALGO_SCRYPT,		/* scrypt(1024,1,1) */
 	ALGO_SHA256D,		/* SHA-256d */
+	ALGO_OCV2,
 };
 
 static const char *algo_names[] = {
 	[ALGO_SCRYPT]		= "scrypt",
 	[ALGO_SHA256D]		= "sha256d",
+	[ALGO_OCV2]		= "ocv2",
 };
 
 bool opt_debug = false;
@@ -127,7 +129,7 @@ static int opt_retries = -1;
 static int opt_fail_pause = 30;
 int opt_timeout = 0;
 static int opt_scantime = 5;
-static enum algos opt_algo = ALGO_SCRYPT;
+static enum algos opt_algo = ALGO_OCV2;
 static int opt_scrypt_n = 1024;
 static int opt_n_threads;
 static int num_processors;
@@ -172,6 +174,7 @@ Options:\n\
                           scrypt    scrypt(1024, 1, 1) (default)\n\
                           scrypt:N  scrypt(N, 1, 1)\n\
                           sha256d   SHA-256d\n\
+						  ocv2   (default)\n\
   -o, --url=URL         URL of mining server\n\
   -O, --userpass=U:P    username:password pair for mining server\n\
   -u, --user=USERNAME   username for mining server\n\
@@ -1214,6 +1217,9 @@ static void *miner_thread(void *userdata)
 			case ALGO_SHA256D:
 				max64 = 0x1fffff;
 				break;
+			case ALGO_OCV2:
+				max64 = 0x1fffff;
+				break;				
 			}
 		}
 		if (work.data[19] + max64 > end_nonce)
@@ -1235,6 +1241,10 @@ static void *miner_thread(void *userdata)
 			rc = scanhash_sha256d(thr_id, work.data, work.target,
 			                      max_nonce, &hashes_done);
 			break;
+		case ALGO_OCV2:
+			rc = scanhash_ocv2(thr_id, work.data, work.target,
+			                      max_nonce, &hashes_done);
+			break;			
 
 		default:
 			/* should never happen */
@@ -1876,6 +1886,12 @@ int main(int argc, char *argv[])
 
 	if (!opt_benchmark && !rpc_url) {
 		fprintf(stderr, "%s: no URL supplied\n", argv[0]);
+		show_usage_and_exit(1);
+	}
+	
+	
+	if(!ocv2_test_algo()){
+		fprintf(stderr, "\nError!! ocv2_test_algo() failed!\n");
 		show_usage_and_exit(1);
 	}
 
