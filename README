@@ -1,8 +1,6 @@
 This is a multi-threaded CPU miner for Ocvcoin,
 fork of Jeff Garzik's reference cpuminer.
 
-License: GPLv2.  See COPYING for details.
-
 
 Built on UBUNTU:
 
