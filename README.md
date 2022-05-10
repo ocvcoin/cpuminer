@@ -2,8 +2,9 @@ This is a multi-threaded CPU miner for Ocvcoin,
 fork of Jeff Garzik's reference cpuminer.
 
 
-Built on UBUNTU:
 
+Build From Source on UBUNTU
+----------------
 
 
 ```
