@@ -31,7 +31,7 @@ git clone https://github.com/ocvcoin/cpuminer.git
 ```
 
 ```
-apt -y install automake  libcurl4-openssl-dev
+sudo apt -y install automake  libcurl4-openssl-dev
 
 ```
 
