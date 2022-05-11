@@ -8,11 +8,10 @@ Build From Source on UBUNTU
 
 
 ```
+sudo apt -y install git
+
 git clone https://github.com/ocvcoin/ocv2_algo.git
 
-```
-
-```
 cd ocv2_algo && sudo bash build.sh
 
 ```
@@ -23,14 +22,8 @@ SELECT OPTION 1 !!!!!!!!!!!!!
 ```
 cd ..
 
-```
-
-```
 git clone https://github.com/ocvcoin/cpuminer.git
 
-```
-
-```
 sudo apt -y install automake  libcurl4-openssl-dev
 
 ```
@@ -38,9 +31,6 @@ sudo apt -y install automake  libcurl4-openssl-dev
 ```
 cd cpuminer
 
-```
-
-```
 ./autogen.sh
 
 ```
