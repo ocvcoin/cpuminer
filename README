@@ -2,6 +2,8 @@ This is a multi-threaded CPU miner for Ocvcoin, fork of Jeff Garzik's reference 
 
 Build From Source on UBUNTU
 
+sudo apt -y install git
+
 git clone https://github.com/ocvcoin/ocv2_algo.git
 
 cd ocv2_algo && sudo bash build.sh
