@@ -1,5 +1,5 @@
 This is a multi-threaded CPU miner for Ocvcoin,
-fork of Jeff Garzik's reference cpuminer.
+fork of pooler's cpuminer.
 
 
 
