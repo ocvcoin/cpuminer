@@ -3,6 +3,9 @@ fork of pooler's cpuminer.
 
 
 
+How to run on Windows: [youtu.be/REuNrxk2MwE](https://youtu.be/REuNrxk2MwE)
+
+
 Build From Source on UBUNTU
 ----------------
 
