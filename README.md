@@ -11,6 +11,8 @@ Build From Source on UBUNTU
 
 
 ```
+sudo apt update
+
 sudo apt -y install git
 
 git clone https://github.com/ocvcoin/ocv2_algo.git
@@ -19,7 +21,7 @@ cd ocv2_algo && sudo bash build.sh
 
 ```
 
-SELECT OPTION 1 !!!!!!!!!!!!!
+
 
 
 ```
@@ -39,7 +41,7 @@ cd cpuminer
 ```
 
 ```
-./configure   LIBS="-I$PWD/../ocv2_algo/include -L$PWD/../ocv2_algo/lib -locv2 "  CFLAGS=" -O3 -I$PWD/../ocv2_algo/include -L$PWD/../ocv2_algo/lib -locv2 "  LDFLAGS="-I$PWD/../ocv2_algo/include -L$PWD/../ocv2_algo/lib -locv2 "
+./configure CFLAGS="-I/usr/local/include -L/usr/local/lib -locv2" LDFLAGS="-I/usr/local/include -L/usr/local/lib -locv2" LIBS="-I/usr/local/include -L/usr/local/lib -locv2"
 
 ```
 
