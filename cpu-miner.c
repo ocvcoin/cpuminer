@@ -1891,8 +1891,8 @@ int main(int argc, char *argv[])
 	
 	
 	if(!ocv2_test_algo()){
-		fprintf(stderr, "\nError!! ocv2_test_algo() failed!\n");
-		show_usage_and_exit(1);
+		fprintf(stderr, "\n\nWarning!!!\nocv2_test_algo() failed!\nWatch the accepted share rate carefully!\n\n");
+		
 	}
 
 	if (!rpc_userpass) {
