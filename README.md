@@ -55,7 +55,7 @@ You can connect to pool via this command:
 
 
 ```
-./minerd -a ocv2 -o stratum+tcp://gb.mining4people.com:3376 -u YourOcvcoinAddressHere -p x
+./minerd -a ocv2 -o stratum+tcp://fi.mining4people.com:3376 -u YourOcvcoinAddressHere -p x
 
 ```
 
