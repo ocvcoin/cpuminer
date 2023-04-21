@@ -112,7 +112,7 @@ echo "
 	You can start mining via this command:
 
 
-	/$PWD/minerd -a ocv2 -o stratum+tcp://fi.mining4people.com:3376 -u YourOcvcoinAddressHere -p x
+	$PWD/minerd -a ocv2 -o stratum+tcp://fi.mining4people.com:3376 -u YourOcvcoinAddressHere -p x
 	
 	
 	(Dont forget to change YourOcvcoinAddressHere)
