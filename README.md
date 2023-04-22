@@ -11,7 +11,7 @@ Build From Source
 
 Automatic build script for Ubuntu
 
-Only for Ubuntu 16 , 18 , 20 , 21 and 22
+Only for Ubuntu 16 , 18 , 20 , 21 , 22 and 23
 
 Just run this command:
 ```
