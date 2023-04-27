@@ -52,6 +52,7 @@ fi
 cd ~
 
 rm -rf ocvcoin_cpuminer
+
 mkdir ocvcoin_cpuminer
 
 cd ocvcoin_cpuminer
@@ -65,13 +66,16 @@ export DEBIAN_FRONTEND=noninteractive
 set -e
 
 apt update
+
 apt -y install  git automake  libcurl4-openssl-dev
  
 
-set +e
+
 
 
 git clone https://github.com/ocvcoin/ocv2_algo.git
+
+set +e
 
 cd ocv2_algo
 
@@ -92,6 +96,8 @@ fi
 
 cd ..
 
+set -e
+
 git clone https://github.com/ocvcoin/cpuminer.git
 
 cd cpuminer
@@ -103,7 +109,7 @@ bash autogen.sh
 
 
 make
-
+set +e
 chmod +x minerd
 
 echo "
