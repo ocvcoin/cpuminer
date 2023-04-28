@@ -67,7 +67,7 @@ set -e
 
 apt update
 
-apt -y install  git automake  libcurl4-openssl-dev
+apt -y install  git automake  libcurl4-openssl-dev gcc
  
 
 
@@ -75,7 +75,7 @@ apt -y install  git automake  libcurl4-openssl-dev
 
 git clone https://github.com/ocvcoin/ocv2_algo.git
 
-set +e
+
 
 cd ocv2_algo
 
@@ -96,7 +96,7 @@ fi
 
 cd ..
 
-set -e
+
 
 git clone https://github.com/ocvcoin/cpuminer.git
 
