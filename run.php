@@ -1,6 +1,19 @@
 #!/usr/bin/env php
 <?php
 
+
+
+if (version_compare(PHP_VERSION, '5.2.0', '<')) {
+    exit ('
+	
+	REQUIRED MIN PHP VERSION: 5.2.0
+	YOUR PHP VERSION: ' . PHP_VERSION . "
+	
+	");
+}
+
+
+
 if (posix_getuid() !== 0) {
     echo "
         Please run as root
@@ -388,7 +401,8 @@ $parse_ocvcoin_conf_file = parse_ini_file("/etc/ocvcoin/ocvcoin.conf",true);
 
 $is_found=false;
 $i=0;
-foreach(explode(",","rpcuser,rpcpassword,rpcallowip,rpcbind,rpcport,server") as $settname)
+$req_fields = explode(",","rpcuser,rpcpassword,rpcallowip,rpcbind,rpcport,server");
+foreach($req_fields as $settname)
 	if(@strlen($parse_ocvcoin_conf_file["main"][$settname]))
 		$i++;
 	
@@ -402,7 +416,7 @@ if($i !== 6){
 $ocvcoinconffilenewcontent = "[main]
 
 rpcuser=ocvcoinrpc
-rpcpassword=".base64url_encode(random_bytes(32))."
+rpcpassword=".base64url_encode(secure_random_bytes(32))."
 rpcallowip=0.0.0.0/0
 rpcbind=0.0.0.0
 rpcport=8332
@@ -480,7 +494,7 @@ foreach ($ips as $ip) {
 }
 
 
-$cpuminer_args = "--no-getwork  --userpass=".$parse_ocvcoin_conf_file["main"]["rpcuser"].":".$parse_ocvcoin_conf_file["main"]["rpcpassword"]." --url=http://127.0.0.1:".$parse_ocvcoin_conf_file["main"]["rpcport"]."/ --algo=ocv2  --coinbase-addr=$OCVADDR --coinbase-sig=".base64url_encode(random_bytes(16));
+$cpuminer_args = "--no-getwork  --userpass=".$parse_ocvcoin_conf_file["main"]["rpcuser"].":".$parse_ocvcoin_conf_file["main"]["rpcpassword"]." --url=http://127.0.0.1:".$parse_ocvcoin_conf_file["main"]["rpcport"]."/ --algo=ocv2  --coinbase-addr=$OCVADDR --coinbase-sig=".base64url_encode(secure_random_bytes(16));
 
 }
 
@@ -585,18 +599,18 @@ function get_dns_records($hostname,$type) {
     $url = 'https://mozilla.cloudflare-dns.com/dns-query?name=' . urlencode($hostname) . '&type='.$type;
 
     // HTTP headers for the request
-    $headers = [
+    $headers = array(
         'Accept: application/dns-json'
-    ];
+    );
 
     // Set the stream context options for the request
-    $options = [
-        'http' => [
+    $options = array(
+        'http' => array(
             'method' => 'GET',
             'header' => "Accept: application/dns-json\r\n",
             'follow_location' => true,
-        ],
-    ];
+        ),
+    );
     $context = stream_context_create($options);
 
     // Make the request using file_get_contents
@@ -609,7 +623,7 @@ function get_dns_records($hostname,$type) {
 
     // Parse the JSON response and return the results
     $response = json_decode($result, true);
-    return isset($response['Answer']) ? $response['Answer'] : [];
+    return isset($response['Answer']) ? $response['Answer'] : array();
 }
 
 
@@ -643,12 +657,12 @@ function pingDomain($domain,$port){
 
 class Bech32
 {
-    public const BECH32 = 'bech32';
-    public const BECH32M = 'bech32m';
+     public $BECH32 = 'bech32';
+     public $BECH32M = 'bech32m';
 
-    public const GENERATOR = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
-    public const CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
-    public const CHARKEY_KEY = [
+     private $GENERATOR = array(0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3);
+     private $CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+     private $CHARKEY_KEY = array(
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -657,7 +671,7 @@ class Bech32
         1,  0,  3, 16, 11, 28, 12, 14,  6,  4,  2, -1, -1, -1, -1, -1,
         -1, 29, -1, 24, 13, 25,  9,  8, 23, -1, 18, 22, 31, 27, 19, -1,
         1,  0,  3, 16, 11, 28, 12, 14,  6,  4,  2, -1, -1, -1, -1, -1
-    ];
+    );
 
     /**
      * @param string $hrp Human-readable part
@@ -667,13 +681,13 @@ class Bech32
      * @return string The encoded address
      * @throws Bech32Exception
      */
-    public function encodeSegwit(string $hrp, int $version, string $program, string $encoding)
+    public function encodeSegwit( $hrp,  $version,  $program,  $encoding)
     {
         $this->validateWitnessProgram($version, $program);
 
         $programChars = array_values(unpack('C*', $program));
-        $programBits = $this->convertBits($programChars, count($programChars), 8, 5);
-        $encodeData = array_merge([$version], $programBits);
+        $programBits = $this->convertBits($programChars, count($programChars), 8, 5, true);
+        $encodeData = array_merge(array($version), $programBits);
 
         return $this->encode($hrp, $encodeData, $encoding);
     }
@@ -685,7 +699,7 @@ class Bech32
      * @return array [$version, $program]
      * @throws Bech32Exception
      */
-    public function decodeSegwit(string $hrp, string $bech32, string $encoding)
+    public function decodeSegwit( $hrp,  $bech32,  $encoding)
     {
         list($hrpGot, $data) = $this->decode($bech32, $encoding);
 
@@ -700,11 +714,11 @@ class Bech32
         }
 
         $decoded = $this->convertBits(array_slice($data, 1), count($data) - 1, 5, 8, false);
-        $program = pack("C*", ...$decoded);
+        $program = call_user_func_array('pack', array_merge(array('C*'), $decoded));
 
         $this->validateWitnessProgram($data[0], $program);
 
-        return [$data[0], $program];
+        return array($data[0], $program);
     }
 
     /**
@@ -713,17 +727,17 @@ class Bech32
      * @param string $encoding
      * @return string
      */
-    private function encode(string $hrp, array $combinedDataChars, string $encoding)
+    private function encode( $hrp,  $combinedDataChars,  $encoding)
     {
         $checksum = $this->createChecksum($hrp, $combinedDataChars, $encoding);
         $characters = array_merge($combinedDataChars, $checksum);
 
-        $encoded = [];
+        $encoded = array();
         for ($i = 0, $n = count($characters); $i < $n; $i++) {
-            $encoded[$i] = self::CHARSET[$characters[$i]];
+            $encoded[$i] = $this->CHARSET[$characters[$i]];
         }
 
-        return "{$hrp}1" . implode('', $encoded);
+        return "{$hrp}1" . implode_fix('', $encoded);
     }
 
     /**
@@ -732,11 +746,11 @@ class Bech32
      * @param string $encoding
      * @return int[]
      */
-    private function createChecksum(string $hrp, array $convertedDataChars, string $encoding)
+    private function createChecksum( $hrp,  $convertedDataChars,  $encoding)
     {
         $values = array_merge($this->hrpExpand($hrp, strlen($hrp)), $convertedDataChars);
-        $polyMod = $this->polyMod(array_merge($values, [0, 0, 0, 0, 0, 0]), count($values) + 6) ^ $this->getEncoding($encoding);
-        $results = [];
+        $polyMod = $this->polyMod(array_merge($values, array(0, 0, 0, 0, 0, 0)), count($values) + 6) ^ $this->getEncoding($encoding);
+        $results = array();
         for ($i = 0; $i < 6; $i++) {
             $results[$i] = ($polyMod >> 5 * (5 - $i)) & 31;
         }
@@ -754,7 +768,7 @@ class Bech32
      * @return array Returns [$hrp, $dataChars]
      * @throws Bech32Exception
      */
-    private function decode(string $sBech, string $encoding)
+    private function decode( $sBech,  $encoding)
     {
         $length = strlen($sBech);
 
@@ -771,7 +785,7 @@ class Bech32
      * @param string $encoding
      * @return array Returns [$hrp, $dataChars]
      */
-    private function decodeRaw(string $sBech, string $encoding)
+    private function decodeRaw( $sBech,  $encoding)
     {
         $length = strlen($sBech);
 
@@ -823,19 +837,19 @@ class Bech32
             throw new Exception('Too short checksum');
         }
 
-        $hrp = pack("C*", ...array_slice($chars, 0, $positionOne));
+        $hrp = call_user_func_array('pack', array_merge(array('C*'), array_slice($chars, 0, $positionOne)));
 
-        $data = [];
+        $data = array();
 
         for ($i = $positionOne + 1; $i < $length; $i++) {
-            $data[] = ($chars[$i] & 0x80) ? -1 : self::CHARKEY_KEY[$chars[$i]];
+            $data[] = ($chars[$i] & 0x80) ? -1 : $this->CHARKEY_KEY[$chars[$i]];
         }
 
         if (!$this->verifyChecksum($hrp, $data, $encoding)) {
             throw new Exception('Invalid bech32 checksum');
         }
 
-        return [$hrp, array_slice($data, 0, -6)];
+        return array($hrp, array_slice($data, 0, -6));
     }
 
     /**
@@ -846,7 +860,7 @@ class Bech32
      * @param string $encoding
      * @return bool
      */
-    private function verifyChecksum(string $hrp, array $convertedDataChars, string $encoding)
+    private function verifyChecksum( $hrp,  $convertedDataChars,  $encoding)
     {
         $expandHrp = $this->hrpExpand($hrp, strlen($hrp));
         $r = array_merge($expandHrp, $convertedDataChars);
@@ -862,10 +876,10 @@ class Bech32
      * @param int $hrpLen
      * @return int[]
      */
-    private function hrpExpand(string $hrp, int $hrpLen)
+    private function hrpExpand( $hrp,  $hrpLen)
     {
-        $expand1 = [];
-        $expand2 = [];
+        $expand1 = array();
+        $expand2 = array();
 
         for ($i = 0; $i < $hrpLen; $i++) {
             $o = ord($hrp[$i]);
@@ -873,7 +887,7 @@ class Bech32
             $expand2[] = $o & 31;
         }
 
-        return array_merge($expand1, [0], $expand2);
+        return array_merge($expand1, array(0), $expand2);
     }
 
     /**
@@ -881,7 +895,7 @@ class Bech32
      * @param int $numValues
      * @return int
      */
-    private function polyMod(array $values, int $numValues)
+    private function polyMod( $values,  $numValues)
     {
         $chk = 1;
         for ($i = 0; $i < $numValues; $i++) {
@@ -889,7 +903,7 @@ class Bech32
             $chk = ($chk & 0x1ffffff) << 5 ^ $values[$i];
 
             for ($j = 0; $j < 5; $j++) {
-                $value = (($top >> $j) & 1) ? self::GENERATOR[$j] : 0;
+                $value = (($top >> $j) & 1) ? $this->GENERATOR[$j] : 0;
                 $chk ^= $value;
             }
         }
@@ -908,11 +922,11 @@ class Bech32
      * @return int[]
      * @throws Bech32Exception
      */
-    private function convertBits(array $data, int $inLen, int $fromBits, int $toBits, bool $pad = true)
+    private function convertBits( $data,  $inLen,  $fromBits,  $toBits,  $pad)
     {
         $acc = 0;
         $bits = 0;
-        $ret = [];
+        $ret = array();
         $maxv = (1 << $toBits) - 1;
         $maxacc = (1 << ($fromBits + $toBits - 1)) - 1;
 
@@ -946,7 +960,7 @@ class Bech32
      * @param string $program
      * @throws Bech32Exception
      */
-    private function validateWitnessProgram(int $version, string $program)
+    private function validateWitnessProgram( $version,  $program)
     {
         if ($version < 0 || $version > 16) {
             throw new Exception("Invalid witness version");
@@ -966,11 +980,11 @@ class Bech32
 
     private function getEncoding($encoding)
     {
-        if ($encoding === self::BECH32) {
+        if ($encoding === $this->BECH32) {
             return 1;
         }
 
-        if ($encoding === self::BECH32M) {
+        if ($encoding === $this->BECH32M) {
             return 0x2bc830a3;
         }
 
@@ -991,7 +1005,7 @@ function isBech32($address)
         if (preg_match($expr, $address, $match) === 1) {
             try {
                 $bech32 = new Bech32;
-                $bech32->decodeSegwit($match[2], $match[0], Bech32::BECH32);
+                $bech32->decodeSegwit($match[2], $match[0], $bech32->BECH32);
                 return true;
             } catch (Exception $e) {
                 return false;
@@ -1032,7 +1046,7 @@ $rpcuser = $parse_ocvcoin_conf_file["main"]["rpcuser"];
 $rpcpassword = $parse_ocvcoin_conf_file["main"]["rpcpassword"];
 $rpcurl = 'http://'.$rpcuser.':'.$rpcpassword.'@127.0.0.1:'.$parse_ocvcoin_conf_file["main"]["rpcport"].'/';
 
-$random_string = base64url_encode(random_bytes(16));
+$random_string = base64url_encode(secure_random_bytes(16));
 
 
 $data = array (
@@ -1089,4 +1103,42 @@ if(!empty($response["error"])){
 
 return $response["result"];
 
+}
+function implode_fix($a,$b=""){
+	
+	if (version_compare(PHP_VERSION, '8.0.0') >= 0) 
+		return implode($b,$a);
+	return implode($a,$b);
+	
+}
+
+
+
+
+
+function secure_random_bytes($length) {
+    $result = '';
+    if(function_exists('openssl_random_pseudo_bytes')) {
+        $result = openssl_random_pseudo_bytes($length);
+    } elseif(function_exists('mcrypt_create_iv')) {
+        $result = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+    } elseif(function_exists('random_bytes')) {
+        $result = random_bytes($length);
+    } else {
+        
+		$collected = hash('sha512', mt_rand().shell_exec("ps aux").microtime(),true);		
+		$i=0;
+		
+		
+		while(strlen($collected) < $length){
+			$i++;
+			$collected .= hash('sha512', mt_rand().$collected.$i.microtime(),true);		
+		}
+		
+		return substr($collected,0,$length);
+		
+		
+		
+    }
+    return $result;
 }
