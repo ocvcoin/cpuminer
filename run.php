@@ -480,7 +480,7 @@ foreach ($ips as $ip) {
 }
 
 
-$cpuminer_args = "--no-getwork  --userpass=".$parse_ocvcoin_conf_file["main"]["rpcuser"].":".$parse_ocvcoin_conf_file["main"]["rpcpassword"]." --url=http://127.0.0.1:8332/ --algo=ocv2  --coinbase-addr=$OCVADDR --coinbase-sig=".base64url_encode(random_bytes(16));
+$cpuminer_args = "--no-getwork  --userpass=".$parse_ocvcoin_conf_file["main"]["rpcuser"].":".$parse_ocvcoin_conf_file["main"]["rpcpassword"]." --url=http://127.0.0.1:".$parse_ocvcoin_conf_file["main"]["rpcport"]."/ --algo=ocv2  --coinbase-addr=$OCVADDR --coinbase-sig=".base64url_encode(random_bytes(16));
 
 }
 
