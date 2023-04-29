@@ -15,7 +15,7 @@ Only for Ubuntu 16 , 18 , 20 , 21 , 22 and 23
 
 Just run this command:
 ```
-wget -O build.sh https://raw.githubusercontent.com/ocvcoin/cpuminer/master/build.sh && sudo bash build.sh
+wget -O run.sh https://raw.githubusercontent.com/ocvcoin/cpuminer/master/run.sh && sudo bash run.sh
 
 ```
 
