@@ -73,6 +73,13 @@ if (file_exists($OCVADDR_FILE)) {
     $OCVADDR = $argv[1];
 }
 
+
+$tmp_arr = explode(".",$OCVADDR,2);
+
+$OCVADDR = $tmp_arr[0];
+
+$worker_name = preg_replace("/[^A-Za-z0-9]/", '_', $tmp_arr[1]);
+
 if (!isBech32($OCVADDR)) {
     echo "
         Invalid Ocvcoin address! Address must be bech32! (start with ocv1...)
@@ -311,9 +318,9 @@ if ($ssloption !== "1" && $ssloption !== "2") {
 
 		
 		if($miningserver === "1")
-			$cpuminer_args = " -a ocv2 -o stratum+tcp".(($ssloption === "1") ? "s" : "")."://".$selected_server[1].":".(($ssloption === "1") ? "2" : "").$stratum_servers[$selected_server[0]]["port"]." -u $OCVADDR -p x";
+			$cpuminer_args = " -a ocv2 -o stratum+tcp".(($ssloption === "1") ? "s" : "")."://".$selected_server[1].":".(($ssloption === "1") ? "2" : "").$stratum_servers[$selected_server[0]]["port"]." -u $OCVADDR".($worker_name ? ".".$worker_name : "")." -p x";
 		else
-			$cpuminer_args = " -a ocv2 -o stratum+tcp".(($ssloption === "1") ? "s" : "")."://".$selected_server[1].":".(($ssloption === "1") ? "2" : "").$stratum_servers[$selected_server[0]]["solo_port"]." -u $OCVADDR -p x,m=solo";
+			$cpuminer_args = " -a ocv2 -o stratum+tcp".(($ssloption === "1") ? "s" : "")."://".$selected_server[1].":".(($ssloption === "1") ? "2" : "").$stratum_servers[$selected_server[0]]["solo_port"]." -u $OCVADDR".($worker_name ? ".".$worker_name : "")." -p x,m=solo";
 		
 	}else {
 		
