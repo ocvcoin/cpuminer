@@ -1,3 +1,12 @@
+# Ocvcoin is no longer minable with the CPU! 
+# You should try our new GPU miner: https://github.com/ocvcoin/gpuminer/blob/main/README.md
+
+
+
+## Ocvcoin Cpu Miner
+
+
+
 This is a multi-threaded CPU miner for Ocvcoin,
 fork of pooler's cpuminer.
 
